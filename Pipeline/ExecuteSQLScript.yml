@@ -1,0 +1,42 @@
+name: Execute SQL Script
+
+resources:
+  repositories:
+    - repository: self
+      persistCredentials: true
+      clean: true
+    - repository: pipelineProject
+      type: github
+      endpoint: sam-hiscox
+      name: sam-hiscox/Script-Execution-Pipeline-Project
+    - repository: database-scripts
+      type: git
+      ref: main
+      name: database-scripts
+
+trigger:
+  - '*'
+
+variables:
+  - group: platform-global
+
+# DEV #
+
+stages:
+  - template: Templates/execute-sql-script-stage.yml
+    parameters:
+      variableGroups: 
+        - platform-dev-sql-automation
+      environmentName: dev
+      serviceConnection: $(devServiceConnection)
+      resourceEnvironmentName: d01
+
+# TEST #
+
+  - template: templates/execute-sql-script-stage.yml
+    parameters:
+      variableGroups: 
+        - platform-tst-sql-automation
+      environmentName: test
+      serviceConnection: $(devServiceConnection)
+      resourceEnvironmentName: t01
