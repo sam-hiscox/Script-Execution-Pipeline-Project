@@ -1,0 +1,62 @@
+parameters:
+- name: serviceConnection
+  type: string
+- name: resourceEnvironmentName
+  type: string  
+- name: variableGroups
+  type: object
+- name: environmentName
+  type: string
+
+stages:
+  - stage: RollbackSQLScriptIn${{ parameters.environmentName }}
+    displayName: ${{ parameters.environmentName }} [${{ parameters.resourceEnvironmentName }}]
+    variables:
+      - '${{ each variableGroup in parameters.variableGroups }}':
+        - group: '${{variableGroup}}' 
+    jobs:
+      - job: RollbackSQLScript
+        displayName: 'Rollback SQL Script'
+        steps:
+          - checkout: pipelineProject
+          - checkout: database-scripts
+          - task: AzureCLI@2
+            displayName: 'Rollback SQL Script'
+            inputs:
+              azureSubscription: ${{parameters.serviceConnection}}
+              scriptType: 'pscore'
+              scriptLocation: 'ScriptPath'
+              ScriptPath: ./Script-Execution-Pipeline-Project/PowerShell/ExecuteSQLScript.ps1
+              ScriptArguments: '-mode rollback -sqlServerFQDN $(sqlServerFQDN) -sqlServerName "$(sqlServerName)-admin-password" -sqlServerAdminUserName $(sqlServerAdminUserName) -sqlDbName $(sqlDbName) -keyVaultName $(keyVaultName) -ScriptFolder "$(ScriptFolder)" -ScriptName "$(ScriptName)"'
+              azurePowerShellVersion: 'LatestVersion'
+              failOnStandardError: true
+
+      - job: waitForValidation
+        displayName: Manual Approval
+        pool: server
+        dependsOn: RollbackSQLScript
+        steps:
+        - task: ManualValidation@0
+          timeoutInMinutes: 60
+          inputs:
+            instructions: 'Please validate rollback was successful before continuing.'
+            onTimeout: 'reject'        
+
+      - job: commitSQLScriptIn${{ parameters.environmentName }}
+        displayName: 'Commit SQL Script'
+        dependsOn: waitForValidation
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - checkout: pipelineProject
+          - checkout: database-scripts
+          - task: AzureCLI@2
+            displayName: 'Commit SQL Script'
+            inputs:
+              azureSubscription: ${{parameters.serviceConnection}}
+              ScriptType: 'pscore'
+              scriptLocation: 'ScriptPath'
+              ScriptPath: ./Script-Execution-Pipeline-Project/PowerShell/ExecuteSQLScript.ps1
+              ScriptArguments: '-mode commit -InstrumentationKey $(InstrumentationKey) -sqlServerFQDN $(sqlServerFQDN) -sqlServerName "$(sqlServerName)-admin-password" -sqlServerAdminUserName $(sqlServerAdminUserName) -sqlDbName $(sqlDbName) -keyVaultName $(keyVaultName) -ScriptFolder "$(ScriptFolder)" -ScriptName "$(ScriptName)" -queuedBy "$(Build.QueuedBy)"'
+              azurePowerShellVersion: 'LatestVersion'
+              failOnStandardError: true
