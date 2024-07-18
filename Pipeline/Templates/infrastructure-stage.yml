@@ -1,0 +1,45 @@
+parameters:
+  - name: stageName
+    type: string
+  - name: serviceConnection
+    type: string
+  - name: EnvironmentId
+    type: string
+  - name: environmentName
+    type: string
+  - name: resourceGroupName
+    type: string
+  - name: templateFilePath
+    type: string
+  - name: location
+    type: string
+
+stages:
+  - stage: ${{parameters.stageName}}
+    displayName: Deploy Infrastructure
+    jobs:
+      - job: CreateResourceGroup
+        displayName: Create ResourceGroup
+        steps:
+          - task: AzurePowerShell@5
+            displayName: Create ResourceGroup
+            inputs:
+              azureSubscription: ${{parameters.serviceConnection}}
+              ScriptType: 'InlineScript'
+              azurePowerShellVersion: 'LatestVersion'
+              Inline: |
+                New-AzResourceGroup -Name ${{parameters.resourceGroupName}} -Location "${{parameters.location}}"
+      
+      - job: DeployAppInsightsAndWorkspaceAnalytics
+        displayName: Deploy App Insights and Workspace Analytics
+        steps:
+          - task: AzureResourceManagerTemplateDeployment@3
+            displayName: Deploy App Insights and Workspace Analytics
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: ${{parameters.serviceConnection}}
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: ${{parameters.resourceGroupName}}
+              location: ${{parameters.location}}
+              templateLocation: ${{parameters.templateFilePath}}
+              deploymentMode: 'Incremental'
