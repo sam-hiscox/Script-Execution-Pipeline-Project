@@ -20,9 +20,18 @@ trigger:
 variables:
   - group: platform-global
 
-# DEV #
-
+####### DEV #######
 stages:
+  - template: Templates/infrastructure-stage.yml
+    parameters:
+      stageName: DeployInfrastructureDev
+      environmentName: dev
+      EnvironmentId: d01
+      serviceConnection: $(devServiceConnection)
+      location: 'West Europe'
+      resourceGroupName: 'sql-automation-dev'
+      templateFilePath: './Script-Execution-Pipeline-Project/Infrastructure/Azure/sql-execution-platform.json'
+
   - template: Templates/execute-sql-script-stage.yml
     parameters:
       variableGroups: 
@@ -31,12 +40,22 @@ stages:
       serviceConnection: $(devServiceConnection)
       resourceEnvironmentName: d01
 
-# TEST #
+####### TEST #######
+
+  - template: Templates/infrastructure-stage.yml
+    parameters:
+      stageName: DeployInfrastructureTest
+      environmentName: tst
+      EnvironmentId: t01
+      serviceConnection: $(devServiceConnection)
+      location: 'West Europe'
+      resourceGroupName: 'sql-automation-tst'
+      templateFilePath: './Script-Execution-Pipeline-Project/Infrastructure/Azure/sql-execution-platform.json'
 
   - template: templates/execute-sql-script-stage.yml
     parameters:
       variableGroups: 
         - platform-tst-sql-automation
-      environmentName: test
+      environmentName: tst
       serviceConnection: $(devServiceConnection)
       resourceEnvironmentName: t01
