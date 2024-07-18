@@ -27,7 +27,7 @@ stages:
               scriptType: 'pscore'
               scriptLocation: 'ScriptPath'
               ScriptPath: ./Script-Execution-Pipeline-Project/PowerShell/ExecuteSQLScript.ps1
-              ScriptArguments: '-mode rollback -sqlServerFQDN $(sqlServerFQDN) -sqlServerName "$(sqlServerName)-admin-password" -sqlServerAdminUserName $(sqlServerAdminUserName) -sqlDbName $(sqlDbName) -keyVaultName $(keyVaultName) -ScriptFolder "$(ScriptFolder)" -ScriptName "$(ScriptName)"'
+              ScriptArguments: '-mode rollback -sqlServerFQDN $(sqlServerFQDN) -sqlServerName "$(sqlServerName)-admin-password" -sqlServerAdminUserName $(sqlServerAdminUserName) -sqlDbName $(sqlDbName) -keyVaultName $(keyVaultName) -ScriptFolder "$(ScriptFolder)" -ScriptName "$(ScriptName)"'     
               azurePowerShellVersion: 'LatestVersion'
               failOnStandardError: true
 
