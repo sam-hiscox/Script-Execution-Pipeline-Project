@@ -27,7 +27,7 @@ stages:
               scriptType: 'pscore'
               scriptLocation: 'ScriptPath'
               ScriptPath: ./Script-Execution-Pipeline-Project/PowerShell/ExecuteSQLScript.ps1
-              ScriptArguments: '-mode rollback -SharedSQLServerFQDN $(SharedSQLServerFQDN) -sqlServerName "$(sqlServerName)-admin-password" -sqlServerAdminUserName $(sqlServerAdminUserName) -sqlDbName $(sqlDbName) -keyVaultName $(keyVaultName) -ScriptFolder "$(ScriptFolder)" -ScriptName "$(ScriptName)"'
+              ScriptArguments: '-mode rollback -sqlServerFQDN $(sqlServerFQDN) -sqlServerName "$(sqlServerName)-admin-password" -sqlServerAdminUserName $(sqlServerAdminUserName) -sqlDbName $(sqlDbName) -keyVaultName $(keyVaultName) -ScriptFolder "$(ScriptFolder)" -ScriptName "$(ScriptName)"'     
               azurePowerShellVersion: 'LatestVersion'
               failOnStandardError: true
 
@@ -57,6 +57,6 @@ stages:
               ScriptType: 'pscore'
               scriptLocation: 'ScriptPath'
               ScriptPath: ./Script-Execution-Pipeline-Project/PowerShell/ExecuteSQLScript.ps1
-              ScriptArguments: '-mode commit -InstrumentationKey $(InstrumentationKey) -SharedSQLServerFQDN $(SharedSQLServerFQDN) -sqlServerName "$(sqlServerName)-admin-password" -sqlServerAdminUserName $(sqlServerAdminUserName) -sqlDbName $(sqlDbName) -keyVaultName $(keyVaultName) -ScriptFolder "$(ScriptFolder)" -ScriptName "$(ScriptName)" -queuedBy "$(Build.QueuedBy)"'
+              ScriptArguments: '-mode commit -InstrumentationKey $(InstrumentationKey) -sqlServerFQDN $(sqlServerFQDN) -sqlServerName "$(sqlServerName)-admin-password" -sqlServerAdminUserName $(sqlServerAdminUserName) -sqlDbName $(sqlDbName) -keyVaultName $(keyVaultName) -ScriptFolder "$(ScriptFolder)" -ScriptName "$(ScriptName)" -queuedBy "$(Build.QueuedBy)"'
               azurePowerShellVersion: 'LatestVersion'
               failOnStandardError: true
