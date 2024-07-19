@@ -9,37 +9,52 @@ parameters:
     type: string
   - name: resourceGroupName
     type: string
-  - name: templateFilePath
-    type: string
   - name: location
+    type: string
+  - name: parametersFilePath
+    type: string
+    default: ''
+  - name: subscriptionId
+    type: string
+  - name: applicationName
     type: string
 
 stages:
-  - stage: ${{parameters.stageName}}
-    displayName: Deploy Infrastructure - ${{ parameters.environmentName }}
+  - stage: ${{ parameters.stageName }}
+    displayName: 'Deploy Infrastructure - ${{ parameters.environmentName }}'
+    variables:
+      - name: BaseName
+        value: "${{parameters.environmentId}}-${{parameters.applicationName}}-${{parameters.environmentName}}"
     jobs:
       - job: CreateResourceGroup
-        displayName: Create ResourceGroup
+        displayName: 'Create ResourceGroup'
         steps:
           - task: AzurePowerShell@5
-            displayName: Create ResourceGroup
+            displayName: 'Create ResourceGroup'
             inputs:
-              azureSubscription: ${{parameters.serviceConnection}}
+              azureSubscription: ${{ parameters.serviceConnection }}
               ScriptType: 'InlineScript'
               azurePowerShellVersion: 'LatestVersion'
               Inline: |
-                New-AzResourceGroup -Name ${{parameters.resourceGroupName}} -Location "${{parameters.location}}"
-      
+                New-AzResourceGroup -Name ${{ parameters.resourceGroupName }} -Location "${{ parameters.location }}" -Force
+
       - job: DeployAppInsightsAndWorkspaceAnalytics
-        displayName: Deploy App Insights and Workspace Analytics
+        displayName: 'Deploy App Insights and Workspace Analytics'
+        dependsOn: CreateResourceGroup
         steps:
           - task: AzureResourceManagerTemplateDeployment@3
-            displayName: Deploy App Insights and Workspace Analytics
+            displayName: 'Deploy App Insights and Workspace Analytics'
             inputs:
               deploymentScope: 'Resource Group'
-              azureResourceManagerConnection: ${{parameters.serviceConnection}}
+              azureResourceManagerConnection: ${{ parameters.serviceConnection }}
+              subscriptionId: ${{ parameters.subscriptionId }}
               action: 'Create Or Update Resource Group'
-              resourceGroupName: ${{parameters.resourceGroupName}}
-              location: ${{parameters.location}}
-              templateLocation: ${{parameters.templateFilePath}}
+              resourceGroupName: ${{ parameters.resourceGroupName }}
+              location: ${{ parameters.location }}
+              templateLocation: 'Linked artifact'
+              csmFile: "./Infrastructure/azure/sql-execution-platform.json"
               deploymentMode: 'Incremental'
+              deploymentOutputs: armOutput
+              overrideParameters:
+                '-environmentNameAbbreviation "${{parameters.environmentName}}"
+                -resourceNamePrefix "${{variables.BaseName}}"'
