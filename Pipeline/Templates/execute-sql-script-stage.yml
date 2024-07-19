@@ -10,7 +10,7 @@ parameters:
 
 stages:
   - stage: RollbackSQLScriptIn${{ parameters.environmentName }}
-    displayName: Execute SQL Script - ${{ parameters.environmentName }}
+    displayName: Execute Script - ${{ parameters.environmentName }}
     variables:
       - '${{ each variableGroup in parameters.variableGroups }}':
         - group: '${{variableGroup}}' 
