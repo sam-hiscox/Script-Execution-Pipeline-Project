@@ -16,7 +16,7 @@ parameters:
 
 stages:
   - stage: ${{parameters.stageName}}
-    displayName: Deploy Infrastructure
+    displayName: Deploy Infrastructure - ${{ parameters.environmentName }}
     jobs:
       - job: CreateResourceGroup
         displayName: Create ResourceGroup
