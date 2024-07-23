@@ -1,0 +1,62 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "appInsightsName": {
+        "type": "string",
+        "metadata": {
+          "description": "Name of the application insights resource"
+        }
+      },
+      "attachedService": {
+        "defaultValue": "",
+        "type": "string"
+      },
+      "logAnalyticsWorkspaceId": {
+        "defaultValue": "",
+        "type": "string"
+      }
+    },
+    "variables" : {
+      "baseProperties": {
+        "Application_Type": "web"
+      },
+      "logAnalyticsWorkspaceProperties": {
+        "WorkspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]"
+      },
+      "useWorkspace": "[greater(length(parameters('logAnalyticsWorkspaceId')),0)]",
+      "appInsightsProperties": "[if(variables('useWorkspace'),union(variables('baseProperties'),variables('logAnalyticsWorkspaceProperties')),variables('baseProperties'))]"
+    },
+    "resources": [
+      {
+        "apiVersion": "2020-02-02",
+        "name": "[parameters('appInsightsName')]",
+        "type": "Microsoft.Insights/components",
+        "location": "[resourceGroup().location]",
+        "kind": "web",
+        "tags": {
+          "[concat('hidden-link:', resourceId('Microsoft.Web/sites', parameters('attachedService')))]": "Resource"
+        },
+        "properties": "[variables('appInsightsProperties')]"
+      }
+    ],
+    "outputs": {
+      "InstrumentationKey": {
+        "type": "string",
+        "value": "[reference(concat('microsoft.insights/components/', parameters('appInsightsName'))).InstrumentationKey]"
+      },
+      "AppId": {
+        "type": "string",
+        "value": "[reference(concat('microsoft.insights/components/', parameters('appInsightsName'))).AppId]"
+      },
+      "AppInsightsResourceId": {
+        "type": "string",
+        "value": "[resourceId('Microsoft.Insights/components', parameters('appInsightsName'))]"
+      },
+      "ConnectionString": {
+        "type": "string",
+        "value": "[reference(concat('microsoft.insights/components/', parameters('appInsightsName'))).ConnectionString]"
+      }
+    }
+  }
+  
