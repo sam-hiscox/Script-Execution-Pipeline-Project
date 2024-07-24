@@ -28,9 +28,10 @@ stages:
       environmentName: dev
       EnvironmentId: d01
       serviceConnection: $(devServiceConnection)
-      location: 'West Europe'
+      location: 'uksouth'
       resourceGroupName: 'sql-automation-dev'
-      templateFilePath: './Script-Execution-Pipeline-Project/Infrastructure/Azure/sql-execution-platform.json'
+      subscriptionId: $(subscriptionID)
+      applicationName: sql-automation
 
   - template: Templates/execute-sql-script-stage.yml
     parameters:
@@ -48,9 +49,10 @@ stages:
       environmentName: tst
       EnvironmentId: t01
       serviceConnection: $(devServiceConnection)
-      location: 'West Europe'
+      location: 'uksouth'
       resourceGroupName: 'sql-automation-tst'
-      templateFilePath: './Script-Execution-Pipeline-Project/Infrastructure/Azure/sql-execution-platform.json'
+      subscriptionId: $(subscriptionID)
+      applicationName: sql-automation
 
   - template: templates/execute-sql-script-stage.yml
     parameters:

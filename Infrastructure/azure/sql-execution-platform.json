@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentNameAbbreviation": {
+      "type": "string"
+    },
+    "resourceNamePrefix": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "deploymentUrlBase": "https://raw.githubusercontent.com/sam-hiscox/Script-Execution-Pipeline-Project/master/Infrastructure/azure/Templates/", 
+    "appInsightName": "[concat(parameters('resourceNamePrefix'), '-ai')]",
+    "logAnalyticsName": "[concat(parameters('resourceNamePrefix'), '-la')]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2017-05-10",
+      "name": "[concat('app-insights','-', parameters('environmentNameAbbreviation'))]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appInsightsName": {
+            "value": "[variables('appInsightName')]"
+          },
+          "logAnalyticsWorkspaceId": {
+            "value": "[reference(concat('log-analytics-workspace','-',parameters('environmentNameAbbreviation'))).outputs.fullyQualifiedResourceId.value]"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2017-05-10",
+      "name": "[concat('log-analytics-workspace','-', parameters('environmentNameAbbreviation'))]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'log-analytics-workspace.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "logAnalyticsWorkspaceName": {
+            "value": "[variables('logAnalyticsName')]"
+          },
+          "logAnalyticsWorkspaceSku": {
+            "value": "PerGB2018"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}
