@@ -33,6 +33,10 @@ stages:
       subscriptionId: $(subscriptionID)
       applicationName: sql-automation
 
+  - template: Templates/test-sql-script-stage.yml
+    parameters:
+      environmentName: dev
+
   - template: Templates/execute-sql-script-stage.yml
     parameters:
       variableGroups: 
@@ -53,6 +57,10 @@ stages:
       resourceGroupName: 'sql-automation-tst'
       subscriptionId: $(subscriptionID)
       applicationName: sql-automation
+
+  - template: Templates/test-sql-script-stage.yml
+    parameters:
+      environmentName: tst  
 
   - template: templates/execute-sql-script-stage.yml
     parameters:
