@@ -15,8 +15,8 @@ param (
     [Parameter(Mandatory = $true)]
     [string] $ScriptName,
 
-    [Parameter(Mandatory = $false)]
-    [string] $InstrumentationKey,
+    [Parameter(Mandatory = $true)]
+    [string] $instrumentationKey,
 
     [Parameter(Mandatory = $false)]
     [string] $queuedBy,
@@ -56,7 +56,7 @@ $sqlServerPassword = getKeyVaultSecret -secretName $sqlServerName -keyVaultName 
 Install-Module -Name SqlServer -Force
 
 # Install the ApplicationInsightsCustomEvents module and define the LogAppInsight function only if the job mode is "commit"
-if ($Mode -eq "commit" -and $InstrumentationKey) {
+if ($Mode -eq "commit" -and $instrumentationKey) {
     Install-Module ApplicationInsightsCustomEvents -Scope CurrentUser -Force -AllowClobber
 
     # Define the LogAppInsight function - this creates the customEvent which will be logged in App Insights
@@ -68,7 +68,7 @@ if ($Mode -eq "commit" -and $InstrumentationKey) {
         $dictionary.Add('Queued By', "$queuedBy") | Out-Null
         $dictionary.Add('Exception Message', "$exceptionMessage") | Out-Null
         $dictionary.Add('Details', "$output") | Out-Null
-        Log-ApplicationInsightsEvent -InstrumentationKey $InstrumentationKey -EventName "SQL Script Execution" -EventDictionary $dictionary
+        Log-ApplicationInsightsEvent -InstrumentationKey $instrumentationKey -EventName "SQL Script Execution" -EventDictionary $dictionary
     }
 }
 
@@ -94,8 +94,9 @@ try {
     Write-Host "SQL script executed successfully: $output"
 
     # Log success message to Application Insights
-    if ($Mode -eq "commit" -and $InstrumentationKey) {
+    if ($Mode -eq "commit" -and $instrumentationKey) {
         LogAppInsight "Success" "$ScriptName" "$sqlDbName" "$queuedBy" "" "$output"
+        Write-Host "Logged success message to application insights."
     }
 }
 catch {
@@ -103,8 +104,9 @@ catch {
     Write-Host "##vso[task.complete result=Failed;]Failed" # Needed to force a pipeline failure
     
     # Log failure message to Application Insights
-    if ($Mode -eq "commit" -and $InstrumentationKey) {
+    if ($Mode -eq "commit" -and $instrumentationKey) {
         LogAppInsight "Failure" "$ScriptName" "$sqlDbName" "$queuedBy" "$($_.Exception.Message)"
+        Write-Host "Logged failure message to application insights,"
     }
     exit 1
 }
