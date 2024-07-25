@@ -1,0 +1,55 @@
+parameters:
+  - name: environmentName
+    type: string  
+
+stages:
+  - stage: TestSQLScriptIn${{ parameters.environmentName }}
+    displayName: Test Script - ${{ parameters.environmentName }}
+    jobs:
+      - job: TestSQLScript
+        displayName: 'Test SQL Script'
+        steps:
+          - checkout: self
+          - checkout: database-scripts
+
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.11'
+              addToPath: true
+
+          - script: |
+              python -m pip install --upgrade pip
+              pip install sqlparse
+            displayName: 'Install dependencies'
+
+          - task: CopyFiles@2
+            displayName: 'Copy Python script to artifact staging directory'
+            inputs:
+              contents: 'Script-Execution-Pipeline-Project/Python/testSqlScript.py'
+              targetFolder: '$(build.artifactstagingdirectory)/publish'
+              flattenFolders: true
+              overWrite: true
+
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Artifact'
+            inputs:
+              PathtoPublish: '$(build.artifactstagingdirectory)/publish'
+              ArtifactName: 'pythondrop'
+              publishLocation: 'Container'
+
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'pythondrop'
+              downloadPath: '$(System.ArtifactsDirectory)'
+
+          # Diagnostic step to list files after downloading artifacts
+          - script: ls $(System.ArtifactsDirectory)/pythondrop
+            displayName: 'List files after downloading artifacts'
+          - script: ls -R
+            displayName: "List all files in directory"
+
+          # Run the SQL validation script with correct path to SQL file
+          - script: python $(System.ArtifactsDirectory)/pythondrop/testSqlScript.py --sql_script "./database-scripts/$(ScriptFolder)/$(ScriptName)"
+            displayName: 'Run SQL validation script'
