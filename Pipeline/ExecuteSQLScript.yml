@@ -69,3 +69,28 @@ stages:
       environmentName: tst
       serviceConnection: $(devServiceConnection)
       resourceEnvironmentName: t01
+
+####### PRE-PROD #######
+
+  - template: Templates/infrastructure-stage.yml
+    parameters:
+      stageName: DeployInfrastructurePreProd
+      environmentName: ppd
+      EnvironmentId: p02
+      serviceConnection: $(devServiceConnection)
+      location: 'uksouth'
+      resourceGroupName: 'sql-automation-ppd'
+      subscriptionId: $(subscriptionID)
+      applicationName: sql-automation
+
+  - template: Templates/test-sql-script-stage.yml
+    parameters:
+      environmentName: ppd
+
+  - template: templates/execute-sql-script-stage.yml
+    parameters:
+      variableGroups: 
+        - platform-tst-sql-automation
+      environmentName: ppd
+      serviceConnection: $(devServiceConnection)
+      resourceEnvironmentName: p02
