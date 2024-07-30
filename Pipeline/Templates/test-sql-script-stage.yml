@@ -1,16 +1,37 @@
 parameters:
   - name: environmentName
-    type: string  
+    type: string
+  - name: variableGroups
+    type: object
+    default: []
 
 stages:
-  - stage: TestSQLScriptIn${{ parameters.environmentName }}
-    displayName: Test Script - ${{ parameters.environmentName }}
+  - stage: TestsIn${{ parameters.environmentName }}
+    displayName: Testing Stage - ${{ parameters.environmentName }}
+    variables:
+      - '${{ each variableGroup in parameters.variableGroups }}':
+        - group: '${{variableGroup}}'
     jobs:
-      - job: TestSQLScript
-        displayName: 'Test SQL Script'
+      - job: TestSQLAndPowerShellScripts
+        displayName: 'Test SQL & PowerShell Scripts'
         steps:
           - checkout: self
           - checkout: database-scripts
+
+          # List files to verify the location of the script
+          - script: ls -R
+            displayName: 'List files in PowerShell directory'
+
+          - powershell: Script-Execution-Pipeline-Project/PowerShell/Invoke-PesterAzureDevOps.ps1
+            displayName: 'Run Pester'
+
+          - task: PublishTestResults@2
+            displayName: 'Publish Test Results'
+            inputs:
+              testResultsFiles: '**/TEST-RESULTS.xml'
+              testRunTitle: 'Test Results for Pester'
+              testResultsFormat: 'NUnit'
+              failTaskOnFailedTests: true 
 
           - task: UsePythonVersion@0
             inputs:

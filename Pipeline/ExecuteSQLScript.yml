@@ -35,6 +35,8 @@ stages:
 
   - template: Templates/test-sql-script-stage.yml
     parameters:
+      variableGroups: 
+        - platform-dev-sql-automation
       environmentName: dev
 
   - template: Templates/execute-sql-script-stage.yml
