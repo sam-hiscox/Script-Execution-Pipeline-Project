@@ -1,10 +1,15 @@
 parameters:
   - name: environmentName
     type: string  
+  - name: variableGroups
+    type: object
 
 stages:
   - stage: TestSQLScriptIn${{ parameters.environmentName }}
     displayName: Test Script - ${{ parameters.environmentName }}
+    variables:
+      - '${{ each variableGroup in parameters.variableGroups }}':
+        - group: '${{variableGroup}}'
     jobs:
       - job: TestSQLScript
         displayName: 'Test SQL Script'
@@ -53,3 +58,21 @@ stages:
           # Run the SQL validation script with correct path to SQL file
           - script: python $(System.ArtifactsDirectory)/pythondrop/testSqlScript.py --sql_script "./database-scripts/$(ScriptFolder)/$(ScriptName)"
             displayName: 'Run SQL validation script'
+
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: '3.11'
+              addToPath: true
+            displayName: 'Use Python 3.11 for Unit Testing'
+
+          - script: |
+              python -m pip install --upgrade pip
+              pip install -r Script-Execution-Pipeline-Project/Python/requirements.txt
+            displayName: 'Install Unit Test Dependencies'  
+
+          - script: |
+              python ./Python/tests/sqlUnitTests.py \
+                --db-server $(sqlServerFQDN) \
+                --db-database $(sqlDbName) \
+                --db-trusted-connection yes
+            displayName: 'Run SQL validation script with pytest'    
