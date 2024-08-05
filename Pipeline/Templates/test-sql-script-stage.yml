@@ -45,8 +45,6 @@ stages:
               downloadPath: '$(System.ArtifactsDirectory)'
 
           # Diagnostic step to list files after downloading artifacts
-          - script: ls $(System.ArtifactsDirectory)/pythondrop
-            displayName: 'List files after downloading artifacts'
           - script: ls -R
             displayName: "List all files in directory"
 
