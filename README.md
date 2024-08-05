@@ -1,4 +1,6 @@
 # Script Execution Pipeline Project
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/sam-hiscox/Script-Execution-Pipeline-Project)
+
 
 ## Description
 
