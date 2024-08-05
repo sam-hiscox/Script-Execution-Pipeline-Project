@@ -35,6 +35,7 @@ stages:
         displayName: Manual Approval
         pool: server
         dependsOn: RollbackSQLScript
+        condition: eq('${{ parameters.environmentName }}', 'ppd')
         steps:
           - task: ManualValidation@0
             timeoutInMinutes: 60
@@ -45,6 +46,7 @@ stages:
       - job: commitSQLScriptIn${{ parameters.environmentName }}
         displayName: 'Commit SQL Script'
         dependsOn: waitForValidation
+        condition: in(dependencies.waitForValidation.result, 'Succeeded', 'Skipped')
         pool:
           vmImage: 'ubuntu-latest'
         steps:
