@@ -11,9 +11,6 @@ parameters:
     type: string
   - name: location
     type: string
-  - name: parametersFilePath
-    type: string
-    default: ''
   - name: subscriptionId
     type: string
   - name: applicationName

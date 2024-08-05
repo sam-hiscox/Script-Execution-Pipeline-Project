@@ -20,7 +20,7 @@ def is_ddl_or_dml(parsed):
 
 # Read the SQL script content
 if not os.path.isfile(args.sql_script):
-    print(f"Error: The file '{args.sql_script}' was not found.")
+    print(f"Error: The file was not found. Please check the file exists in the repository & the runtime variable was set.")
     exit(1)
 
 try:
