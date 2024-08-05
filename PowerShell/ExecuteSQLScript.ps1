@@ -1,35 +1,4 @@
-[CmdletBinding()]
-param (
-    [Parameter(Mandatory = $true)]
-    [string] $sqlServerFQDN,
 
-    [Parameter(Mandatory = $true)]
-    [string] $sqlServerAdminUserName,
-
-    [Parameter(Mandatory = $true)]
-    [string] $sqlDbName,
-
-    [Parameter(Mandatory = $true)]
-    [string] $ScriptFolder,
-
-    [Parameter(Mandatory = $true)]
-    [string] $ScriptName,
-
-    [Parameter(Mandatory = $false)]
-    [string] $InstrumentationKey,
-
-    [Parameter(Mandatory = $false)]
-    [string] $queuedBy,
-
-    [Parameter(Mandatory = $true)]
-    [string] $Mode,
-
-    [Parameter(Mandatory = $true)]
-    [string] $sqlServerName,
-
-    [Parameter(Mandatory = $true)]
-    [string] $keyVaultName
-)
 function errorHandling {
     param (
         $errorMessage

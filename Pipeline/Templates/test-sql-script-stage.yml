@@ -1,16 +1,9 @@
 parameters:
   - name: environmentName
     type: string
-  - name: variableGroups
-    type: object
-    default: []
-
 stages:
   - stage: TestsIn${{ parameters.environmentName }}
     displayName: Testing Stage - ${{ parameters.environmentName }}
-    variables:
-      - '${{ each variableGroup in parameters.variableGroups }}':
-        - group: '${{variableGroup}}'
     jobs:
       - job: TestSQLAndPowerShellScripts
         displayName: 'Test SQL & PowerShell Scripts'
