@@ -1,6 +1,12 @@
 parameters:
   - name: environmentName
+    type: string
+  - name: scriptFolder
+    type: string
+    default: 'test-folder'
+  - name: scriptName
     type: string  
+    default: 'test-script-2.sql'
 
 stages:
   - stage: TestSQLScriptIn${{ parameters.environmentName }}

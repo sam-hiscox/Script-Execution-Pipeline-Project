@@ -25,6 +25,8 @@ stages:
   - template: Templates/test-sql-script-stage.yml
     parameters:
       environmentName: dev
+      scriptFolder: $(ScriptFolder)
+      scriptName: $(ScriptName)
 
   - template: Templates/infrastructure-stage.yml
     parameters:

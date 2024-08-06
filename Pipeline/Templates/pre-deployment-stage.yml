@@ -1,0 +1,24 @@
+parameters:
+  - name: ScriptFolder
+    type: string
+    default: ''
+  - name: ScriptName
+    type: string
+    default: ''
+
+stages:
+- stage: InitializeVariables
+  displayName: 'Initialize Variables'
+  condition: or(eq('${{ parameters.ScriptFolder }}', ''), eq('${{ parameters.ScriptName }}', ''))
+  jobs:
+  - job: InitializeJob
+    steps:
+    - script: |
+        echo "Checking and setting variables..."
+        if [ -z "$SCRIPT_FOLDER" ]; then
+          echo "##vso[task.setvariable variable=ScriptFolder]test-folder"
+        fi
+        if [ -z "$SCRIPT_NAME" ]; then
+          echo "##vso[task.setvariable variable=ScriptName]test-script-2.sql"
+        fi
+      displayName: 'Set default values for ScriptFolder and ScriptName if not provided'
