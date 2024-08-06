@@ -46,7 +46,7 @@ stages:
       - job: commitSQLScriptIn${{ parameters.environmentName }}
         displayName: 'Commit SQL Script'
         dependsOn: waitForValidation
-        condition: in(dependencies.waitForValidation.result, 'Succeeded', 'Skipped')
+        condition: and(in(dependencies.waitForValidation.result, 'Succeeded', 'Skipped'), eq(dependencies.RollbackSQLScript.result, 'Succeeded'))
         pool:
           vmImage: 'ubuntu-latest'
         steps:
