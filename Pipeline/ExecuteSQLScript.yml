@@ -84,7 +84,7 @@ stages:
   - template: templates/execute-sql-script-stage.yml
     parameters:
       variableGroups: 
-        - platform-tst-sql-automation
+        - platform-ppd-sql-automation
       environmentName: ppd
       serviceConnection: $(devServiceConnection)
       resourceEnvironmentName: p02
