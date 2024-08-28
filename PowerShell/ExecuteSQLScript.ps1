@@ -89,7 +89,7 @@ Write-Host "Target database: $sqlDbName"
 
 try {
     # Attempt to execute the SQL script with verbose, and include the message in the standard output for error handling
-    $output = Invoke-Sqlcmd -ServerInstance $sqlServerFQDN -Database $sqlDbName -Username $sqlServerAdminUserName -Password $sqlServerPassword -Query $sqlScript -OutputSqlErrors $true -IncludeSqlUserErrors -ErrorAction Stop -Verbose 4>&1
+    $output = Invoke-Sqlcmd -ServerInstance $sqlServerFQDN -Database $sqlDbName -Username $sqlServerAdminUserName -Password $sqlServerPassword -Query $sqlScript -OutputSqlErrors $true -IncludeSqlUserErrors -ErrorAction Stop -Verbose 4>&1 -Querytimeout 90
 
     Write-Host "SQL script executed successfully: $output"
 
