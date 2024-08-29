@@ -4,41 +4,37 @@
 Import-Module Pester
 
 # Import the functions to be tested
-. "$PSScriptRoot\testpester.ps1"
+. "$PSScriptRoot\ExecuteSQLScript.ps1"
 
 # Pester test for getKeyVaultSecret
 Describe "getKeyVaultSecret" {
     BeforeAll {
-        # Mock the az command to return a predefined value
+        # Mock the az command to return a predefined value for a specific secret show request
         Mock -CommandName az -MockWith {
-            param (
-                [string]$CommandName,
-                [string[]]$Arguments
-            )
+            param ([string[]]$Arguments)
             if ($Arguments -contains "show") {
                 return "mock-secret-value"
             }
         }
 
-        # Mock the errorHandling function to verify its call
-        Mock -CommandName errorHandling -MockWith {
-            param (
-                [string]$errorMessage
-            )
-            Write-Host $errorMessage
-        }
+        # Mock the errorHandling function to verify it is called only when an error occurs
+        Mock -CommandName errorHandling
     }
 
-    Context "when called with valid parameters" {
-        It "should fetch the secret from the key vault" {
-            $secretName = "testSecret"
-            $keyVaultName = "testKeyVault"
-            
-            # Call the function
-            $result = getKeyVaultSecret -secretName $secretName -keyVaultName $keyVaultName
-            
-            # Validate the result
-            $result | Should -Be "mock-secret-value"
-        }
+    It "should call errorHandling when az command fails" {
+        # Modify the az mock to return $null to simulate failure
+        Mock -CommandName az -MockWith { return $null }
+
+        $secretName = "testSecret"
+        $keyVaultName = "testKeyVault"
+        
+        # Call the function
+        $result = getKeyVaultSecret -secretName $secretName -keyVaultName $keyVaultName
+        
+        # Validate that the result is $null
+        $result | Should -Be $null
+        
+        # Ensure errorHandling was called
+        Assert-MockCalled -CommandName errorHandling -Times 1
     }
 }

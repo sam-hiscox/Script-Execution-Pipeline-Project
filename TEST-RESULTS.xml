@@ -1,22 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="1" errors="0" failures="1" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2024-07-31" time="13:43:04">
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="2" errors="0" failures="2" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2024-08-28" time="16:18:52">
   <environment clr-version="4.0.30319.42000" user-domain="AD" cwd="C:\Users\shiscox\OneDrive - Department for Education\Documents\EPA\Script-Execution-Pipeline-Project" platform="Microsoft Windows 11 Enterprise|C:\WINDOWS|\Device\Harddisk0\Partition4" machine-name="SL635565" nunit-version="2.5.8.0" os-version="10.0.22631" user="SHISCOX" />
   <culture-info current-culture="en-GB" current-uiculture="en-GB" />
-  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="1.6259" asserts="0" description="Pester">
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="3.8547" asserts="0" description="Pester">
     <results>
-      <test-suite type="TestFixture" name="C:\Users\shiscox\OneDrive - Department for Education\Documents\EPA\Script-Execution-Pipeline-Project\PowerShell\ExecuteSQLScript.Tests.ps1" executed="True" result="Failure" success="False" time="1.6259" asserts="0" description="C:\Users\shiscox\OneDrive - Department for Education\Documents\EPA\Script-Execution-Pipeline-Project\PowerShell\ExecuteSQLScript.Tests.ps1">
+      <test-suite type="TestFixture" name="C:\Users\shiscox\OneDrive - Department for Education\Documents\EPA\Script-Execution-Pipeline-Project\PowerShell\ExecuteSQLScript.Tests.ps1" executed="True" result="Failure" success="False" time="3.6936" asserts="0" description="C:\Users\shiscox\OneDrive - Department for Education\Documents\EPA\Script-Execution-Pipeline-Project\PowerShell\ExecuteSQLScript.Tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="errorHandling" executed="True" result="Failure" success="False" time="0.7254" asserts="0" description="errorHandling">
+          <test-suite type="TestFixture" name="errorHandling" executed="True" result="Failure" success="False" time="0" asserts="0" description="errorHandling">
             <results>
-              <test-case description="should throw an error when the previous command fails" name="errorHandling.should throw an error when the previous command fails" time="0.5799" asserts="0" success="False" result="Failure" executed="True">
+              <test-case description="should throw an error when the previous command fails" name="errorHandling.should throw an error when the previous command fails" time="0" asserts="0" success="False" result="Failure" executed="True">
                 <failure>
-                  <message>Expected an exception with message like 'Test error message' to be thrown, but the message was 'The term 'errorHandling' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.'. from C:\Users\shiscox\OneDrive - Department for Education\Documents\EPA\Script-Execution-Pipeline-Project\PowerShell\ExecuteSQLScript.Tests.ps1:10 char:11
-    +         { errorHandling -errorMessage "Test error message" } | Should ...
-    +           ~~~~~~~~~~~~~</message>
-                  <stack-trace>at { errorHandling -errorMessage "Test error message" } | Should -Throw "Test error message", C:\Users\shiscox\OneDrive - Department for Education\Documents\EPA\Script-Execution-Pipeline-Project\PowerShell\ExecuteSQLScript.Tests.ps1:10
-at &lt;ScriptBlock&gt;, C:\Users\shiscox\OneDrive - Department for Education\Documents\EPA\Script-Execution-Pipeline-Project\PowerShell\ExecuteSQLScript.Tests.ps1:10</stack-trace>
+                  <message>This test should run but it did not. Most likely a setup in some parent block failed.</message>
+                  <stack-trace />
                 </failure>
               </test-case>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="C:\Users\shiscox\OneDrive - Department for Education\Documents\EPA\Script-Execution-Pipeline-Project\PowerShell\testpester.Tests.ps1" executed="True" result="Failure" success="False" time="0.1611" asserts="0" description="C:\Users\shiscox\OneDrive - Department for Education\Documents\EPA\Script-Execution-Pipeline-Project\PowerShell\testpester.Tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="getKeyVaultSecret" executed="True" result="Failure" success="False" time="0.0712" asserts="0" description="getKeyVaultSecret">
+            <results>
+              <test-suite type="TestFixture" name="getKeyVaultSecret.when called with valid parameters" executed="True" result="Failure" success="False" time="0.045" asserts="0" description="getKeyVaultSecret.when called with valid parameters">
+                <results>
+                  <test-case description="should fetch the secret from the key vault" name="getKeyVaultSecret.when called with valid parameters.should fetch the secret from the key vault" time="0.0335" asserts="0" success="False" result="Failure" executed="True">
+                    <failure>
+                      <message>Expected 'mock-secret-value', but got $null.</message>
+                      <stack-trace>at $result | Should -Be "mock-secret-value", C:\Users\shiscox\OneDrive - Department for Education\Documents\EPA\Script-Execution-Pipeline-Project\PowerShell\testpester.Tests.ps1:41
+at &lt;ScriptBlock&gt;, C:\Users\shiscox\OneDrive - Department for Education\Documents\EPA\Script-Execution-Pipeline-Project\PowerShell\testpester.Tests.ps1:41</stack-trace>
+                    </failure>
+                  </test-case>
+                </results>
+              </test-suite>
             </results>
           </test-suite>
         </results>

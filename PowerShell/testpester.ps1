@@ -5,7 +5,11 @@ function getKeyVaultSecret {
     )
     Write-Host "Fetching key vault secret $secretName from key vault $keyVaultName..."
     $keyVaultSecret = az keyvault secret show -n $secretName --vault-name $keyVaultName --query "value" -o tsv
-    errorHandling -errorMessage "Failed to get key vault secret $secretName from key vault $keyVaultName"
+
+    if (-not $keyVaultSecret) {
+        errorHandling -errorMessage "Failed to get key vault secret $secretName from key vault $keyVaultName"
+    }
+
     return $keyVaultSecret
 }
 
